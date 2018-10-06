@@ -1,0 +1,335 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset=utf-8>
+        <title>Tablero</title>
+        <style>
+            body { margin: 0; }
+            canvas { width: 100%; height: 100%; };
+        </style>
+    </head>
+
+    <body>
+        <script src="3js/three.js"></script>
+        <script>
+            //creando la escena
+            var scene = new THREE.Scene();
+            var camera = new THREE.PerspectiveCamera ( 75, window.innerWidth / window.innerHeight, 0.1 , 50 );
+
+            var renderer = new THREE.WebGLRenderer();
+            renderer.setSize( window.innerWidth, window.innerHeight );
+            document.body.appendChild( renderer.domElement );
+            
+            //creando figura
+            var geometry = new THREE.BoxGeometry( 1, 0.5, 1 );
+            var material1 = new THREE.MeshPhongMaterial( { color: 0xfffff5, emissive: 0x072534, side: THREE.DoubleSide, flatShading: true } );
+            var material2 = new THREE.MeshPhongMaterial( { color: 0x000005, emissive: 0x072534, side: THREE.DoubleSide, flatShading: true } );
+
+            var cube1a = new THREE.Mesh( geometry, material1 );
+            var cube1b = new THREE.Mesh( geometry, material2 );
+            var cube1c = new THREE.Mesh( geometry, material1 );
+            var cube1d = new THREE.Mesh( geometry, material2 );
+            var cube1e = new THREE.Mesh( geometry, material2 );
+            var cube1f = new THREE.Mesh( geometry, material1 );
+            var cube1g = new THREE.Mesh( geometry, material2 );
+            var cube1h = new THREE.Mesh( geometry, material1 );
+            
+            var cube2a = new THREE.Mesh( geometry, material2 );
+            var cube2b = new THREE.Mesh( geometry, material1 );
+            var cube2c = new THREE.Mesh( geometry, material2 );
+            var cube2d = new THREE.Mesh( geometry, material1 );
+            var cube2e = new THREE.Mesh( geometry, material1 );
+            var cube2f = new THREE.Mesh( geometry, material2 );
+            var cube2g = new THREE.Mesh( geometry, material1 );
+            var cube2h = new THREE.Mesh( geometry, material2 );
+
+            var cube3a = new THREE.Mesh( geometry, material1 );
+            var cube3b = new THREE.Mesh( geometry, material2 );
+            var cube3c = new THREE.Mesh( geometry, material1 );
+            var cube3d = new THREE.Mesh( geometry, material2 );
+            var cube3e = new THREE.Mesh( geometry, material2 );
+            var cube3f = new THREE.Mesh( geometry, material1 );
+            var cube3g = new THREE.Mesh( geometry, material2 );
+            var cube3h = new THREE.Mesh( geometry, material1 );
+
+            var cube4a = new THREE.Mesh( geometry, material2 );
+            var cube4b = new THREE.Mesh( geometry, material1 );
+            var cube4c = new THREE.Mesh( geometry, material2 );
+            var cube4d = new THREE.Mesh( geometry, material1 );
+            var cube4e = new THREE.Mesh( geometry, material1 );
+            var cube4f = new THREE.Mesh( geometry, material2 );
+            var cube4g = new THREE.Mesh( geometry, material1 );
+            var cube4h = new THREE.Mesh( geometry, material2 );
+
+            var cube5a = new THREE.Mesh( geometry, material2 );
+            var cube5b = new THREE.Mesh( geometry, material1 );
+            var cube5c = new THREE.Mesh( geometry, material2 );
+            var cube5d = new THREE.Mesh( geometry, material1 );
+            var cube5e = new THREE.Mesh( geometry, material1 );
+            var cube5f = new THREE.Mesh( geometry, material2 );
+            var cube5g = new THREE.Mesh( geometry, material1 );
+            var cube5h = new THREE.Mesh( geometry, material2 );
+
+            var cube6a = new THREE.Mesh( geometry, material1 );
+            var cube6b = new THREE.Mesh( geometry, material2 );
+            var cube6c = new THREE.Mesh( geometry, material1 );
+            var cube6d = new THREE.Mesh( geometry, material2 );
+            var cube6e = new THREE.Mesh( geometry, material2 );
+            var cube6f = new THREE.Mesh( geometry, material1 );
+            var cube6g = new THREE.Mesh( geometry, material2 );
+            var cube6h = new THREE.Mesh( geometry, material1 );
+
+            var cube7a = new THREE.Mesh( geometry, material2 );
+            var cube7b = new THREE.Mesh( geometry, material1 );
+            var cube7c = new THREE.Mesh( geometry, material2 );
+            var cube7d = new THREE.Mesh( geometry, material1 );
+            var cube7e = new THREE.Mesh( geometry, material1 );
+            var cube7f = new THREE.Mesh( geometry, material2 );
+            var cube7g = new THREE.Mesh( geometry, material1 );
+            var cube7h = new THREE.Mesh( geometry, material2 );
+
+            var cube8a = new THREE.Mesh( geometry, material1 );
+            var cube8b = new THREE.Mesh( geometry, material2 );
+            var cube8c = new THREE.Mesh( geometry, material1 );
+            var cube8d = new THREE.Mesh( geometry, material2 );
+            var cube8e = new THREE.Mesh( geometry, material2 );
+            var cube8f = new THREE.Mesh( geometry, material1 );
+            var cube8g = new THREE.Mesh( geometry, material2 );
+            var cube8h = new THREE.Mesh( geometry, material1 );
+
+            cube1a.position.x = 0;
+            cube1b.position.x = 1;
+            cube1c.position.x = 2;
+            cube1d.position.x = 3;
+            cube1e.position.x = -1;
+            cube1f.position.x = -2;
+            cube1g.position.x = -3;
+            cube1h.position.x = -4;
+
+            cube2a.position.x = 0;
+            cube2a.position.z = 1;
+            cube2b.position.x = 1;
+            cube2b.position.z = 1;
+            cube2c.position.x = 2;
+            cube2c.position.z = 1;
+            cube2d.position.x = 3;
+            cube2d.position.z = 1;
+            cube2e.position.x = -1;
+            cube2e.position.z = 1;
+            cube2f.position.x = -2;
+            cube2f.position.z = 1;
+            cube2g.position.x = -3;
+            cube2g.position.z = 1;
+            cube2h.position.x = -4;
+            cube2h.position.z = 1;
+
+            cube3a.position.x = 0;
+            cube3a.position.z = 2;
+            cube3b.position.x = 1;
+            cube3b.position.z = 2;
+            cube3c.position.x = 2;
+            cube3c.position.z = 2;
+            cube3d.position.x = 3;
+            cube3d.position.z = 2;
+            cube3e.position.x = -1;
+            cube3e.position.z = 2;
+            cube3f.position.x = -2;
+            cube3f.position.z = 2;
+            cube3g.position.x = -3;
+            cube3g.position.z = 2;
+            cube3h.position.x = -4;
+            cube3h.position.z = 2;
+
+            cube4a.position.x = 0;
+            cube4a.position.z = 3;
+            cube4b.position.x = 1;
+            cube4b.position.z = 3;
+            cube4c.position.x = 2;
+            cube4c.position.z = 3;
+            cube4d.position.x = 3;
+            cube4d.position.z = 3;
+            cube4e.position.x = -1;
+            cube4e.position.z = 3;
+            cube4f.position.x = -2;
+            cube4f.position.z = 3;
+            cube4g.position.x = -3;
+            cube4g.position.z = 3;
+            cube4h.position.x = -4;
+            cube4h.position.z = 3;
+
+            cube5a.position.x = 0;
+            cube5a.position.z = -1;
+            cube5b.position.x = 1;
+            cube5b.position.z = -1;
+            cube5c.position.x = 2;
+            cube5c.position.z = -1;
+            cube5d.position.x = 3;
+            cube5d.position.z = -1;
+            cube5e.position.x = -1;
+            cube5e.position.z = -1;
+            cube5f.position.x = -2;
+            cube5f.position.z = -1;
+            cube5g.position.x = -3;
+            cube5g.position.z = -1;
+            cube5h.position.x = -4;
+            cube5h.position.z = -1;
+
+            cube6a.position.x = 0;
+            cube6a.position.z = -2;
+            cube6b.position.x = 1;
+            cube6b.position.z = -2;
+            cube6c.position.x = 2;
+            cube6c.position.z = -2;
+            cube6d.position.x = 3;
+            cube6d.position.z = -2;
+            cube6e.position.x = -1;
+            cube6e.position.z = -2;
+            cube6f.position.x = -2;
+            cube6f.position.z = -2;
+            cube6g.position.x = -3;
+            cube6g.position.z = -2;
+            cube6h.position.x = -4;
+            cube6h.position.z = -2;
+
+            cube7a.position.x = 0;
+            cube7a.position.z = -3;
+            cube7b.position.x = 1;
+            cube7b.position.z = -3;
+            cube7c.position.x = 2;
+            cube7c.position.z = -3;
+            cube7d.position.x = 3;
+            cube7d.position.z = -3;
+            cube7e.position.x = -1;
+            cube7e.position.z = -3;
+            cube7f.position.x = -2;
+            cube7f.position.z = -3;
+            cube7g.position.x = -3;
+            cube7g.position.z = -3;
+            cube7h.position.x = -4;
+            cube7h.position.z = -3;
+
+            cube8a.position.x = 0;
+            cube8a.position.z = -4;
+            cube8b.position.x = 1;
+            cube8b.position.z = -4;
+            cube8c.position.x = 2;
+            cube8c.position.z = -4;
+            cube8d.position.x = 3;
+            cube8d.position.z = -4;
+            cube8e.position.x = -1;
+            cube8e.position.z = -4;
+            cube8f.position.x = -2;
+            cube8f.position.z = -4;
+            cube8g.position.x = -3;
+            cube8g.position.z = -4;
+            cube8h.position.x = -4;
+            cube8h.position.z = -4;
+
+            //agrupando todo
+            var tablero = new THREE.Group();
+
+            tablero.add( cube1a );
+            tablero.add( cube1b );
+            tablero.add( cube1c );
+            tablero.add( cube1d );
+            tablero.add( cube1e );
+            tablero.add( cube1f );
+            tablero.add( cube1g );
+            tablero.add( cube1h );
+            
+            tablero.add( cube2a );
+            tablero.add( cube2b );
+            tablero.add( cube2c );
+            tablero.add( cube2d );
+            tablero.add( cube2e );
+            tablero.add( cube2f );
+            tablero.add( cube2g );
+            tablero.add( cube2h );
+            
+            tablero.add( cube3a );
+            tablero.add( cube3b );
+            tablero.add( cube3c );
+            tablero.add( cube3d );
+            tablero.add( cube3e );
+            tablero.add( cube3f );
+            tablero.add( cube3g );
+            tablero.add( cube3h );
+
+            tablero.add( cube4a );
+            tablero.add( cube4b );
+            tablero.add( cube4c );
+            tablero.add( cube4d );
+            tablero.add( cube4e );
+            tablero.add( cube4f );
+            tablero.add( cube4g );
+            tablero.add( cube4h );
+
+            tablero.add( cube5a );
+            tablero.add( cube5b );
+            tablero.add( cube5c );
+            tablero.add( cube5d );
+            tablero.add( cube5e );
+            tablero.add( cube5f );
+            tablero.add( cube5g );
+            tablero.add( cube5h );
+
+            tablero.add( cube6a );
+            tablero.add( cube6b );
+            tablero.add( cube6c );
+            tablero.add( cube6d );
+            tablero.add( cube6e );
+            tablero.add( cube6f );
+            tablero.add( cube6g );
+            tablero.add( cube6h );
+
+            tablero.add( cube7a );
+            tablero.add( cube7b );
+            tablero.add( cube7c );
+            tablero.add( cube7d );
+            tablero.add( cube7e );
+            tablero.add( cube7f );
+            tablero.add( cube7g );
+            tablero.add( cube7h );
+
+            tablero.add( cube8a );
+            tablero.add( cube8b );
+            tablero.add( cube8c );
+            tablero.add( cube8d );
+            tablero.add( cube8e );
+            tablero.add( cube8f );
+            tablero.add( cube8g );
+            tablero.add( cube8h );
+
+            scene.add( tablero );
+
+            //posicion de camara
+            camera.position.z = 11;
+            camera.position.y = 3;
+
+            //luces
+            var lights = [];
+			lights[ 0 ] = new THREE.PointLight( 0xffffff, 1, 0 );
+			lights[ 1 ] = new THREE.PointLight( 0xffffff, 1, 0 );
+			lights[ 2 ] = new THREE.PointLight( 0xffffff, 1, 0 );
+
+			lights[ 0 ].position.set( 0, 200, 0 );
+			lights[ 1 ].position.set( 100, 200, 100 );
+			lights[ 2 ].position.set( - 100, - 200, - 100 );
+
+			scene.add( lights[ 0 ] );
+			scene.add( lights[ 1 ] );
+			scene.add( lights[ 2 ] );
+
+            //render de escena
+            function animate() {
+                requestAnimationFrame( animate );
+
+                tablero.rotation.y += 0.005;
+
+                renderer.render( scene, camera );
+            }
+
+            animate();
+        </script>
+    </body>
+</html>
