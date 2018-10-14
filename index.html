@@ -25,6 +25,7 @@
         <script>
             //creando la escena
             var scene = new THREE.Scene();
+            scene.background = new THREE.Color( 0x106499 );
             var camera = new THREE.PerspectiveCamera ( 75, window.innerWidth / window.innerHeight, 0.1 , 50 );
 
             var renderer = new THREE.WebGLRenderer();
@@ -35,7 +36,7 @@
             var controls = new THREE.OrbitControls(camera,renderer.domElement);
 
             //creando figura
-            var tile_width = 2
+            var tile_width = 2;
             var geometry = new THREE.BoxGeometry( tile_width, tile_width /10, tile_width );
             var material1 = new THREE.MeshPhongMaterial( { color: 0xffffff, side: THREE.DoubleSide, flatShading: true } );
             var material2 = new THREE.MeshPhongMaterial( { color: 0x000000, side: THREE.DoubleSide, flatShading: true } );
