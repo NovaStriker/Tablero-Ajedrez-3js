@@ -2,6 +2,7 @@
 <html>
     <head>
         <meta charset=utf-8>
+        <meta name="Autores" content="John Cuesta, Luis Lama, David Neira">
         <title>Tablero Ajedrez</title>
         <style>
             body { margin: 0; }
@@ -19,6 +20,7 @@
     </head>
     <body>
         <div id="BODY_Title">Autores: John Cuesta, Luis Lama, David Neira</div>
+
         <script src="3js/three.js"></script>
         <script src="3js/OrbitControls.js"></script>
         <script src="3js/dat.gui.min.js"></script>
@@ -35,85 +37,117 @@
             //Para movernos con el mouse
             var controls = new THREE.OrbitControls(camera,renderer.domElement);
 
-            //creando figura
-            var tile_width = 2;
-            var geometry = new THREE.BoxGeometry( tile_width, tile_width /10, tile_width );
-            var material1 = new THREE.MeshPhongMaterial( { color: 0xffffff, side: THREE.DoubleSide, flatShading: true } );
-            var material2 = new THREE.MeshPhongMaterial( { color: 0x000000, side: THREE.DoubleSide, flatShading: true } );
-            
-            var material;
-            var tablero = new THREE.Group();
-            colorBlack = 1
-
-            for (var i = 0; i < 8; i++) {
-                
-                if (i % 2 == 0){ colorBlack = 1
-                }else{ colorBlack = -1 };
-                
-                for (var j = 0; j < 8; j++) {
-                    if (colorBlack == 1){ material = material1; }
-                    else{ material = material2; };
-
-                    var tile = new THREE.Mesh(geometry, material);
-                    
-                    tile.position.x = (-4+j)*tile_width;
-                    tile.position.z = (-4+i)*tile_width;
-
-                    tablero.add(tile);
-
-                    colorBlack *= -1;
-                }                          
+            var getMaterial = function(colorAssign){
+                let material = new THREE.MeshPhongMaterial( { color: colorAssign, side: THREE.DoubleSide, flatShading: true } );
+                return material;
             }
 
-            scene.add(tablero);
+            //creando figura
+            var tile_width = 2;
+            var tile_color = "#ffffff";
+
+            var addTablero = function(){
+                var geometry = new THREE.BoxGeometry( tile_width, tile_width /10, tile_width );
+                // var material1 = new THREE.MeshPhongMaterial( { color: 0xffffff, side: THREE.DoubleSide, flatShading: true } );
+                // var material2 = new THREE.MeshPhongMaterial( { color: tile_color, side: THREE.DoubleSide, flatShading: true } );
+                var material1 = getMaterial("#000000");
+                var material2 = getMaterial(tile_color);
+
+                var material;
+                var tablero = new THREE.Group();
+                colorBlack = 1
+
+                for (var i = 0; i < 8; i++) {
+                    
+                    if (i % 2 == 0){ colorBlack = 1
+                    }else{ colorBlack = -1 };
+                    
+                    for (var j = 0; j < 8; j++) {
+                        if (colorBlack == 1){ material = material1; }
+                        else{ material = material2; };
+
+                        var tile = new THREE.Mesh(geometry, material);
+                        
+                        tile.position.x = (-4+j)*tile_width;
+                        tile.position.z = (-4+i)*tile_width;
+
+                        tablero.add(tile);
+
+                        colorBlack *= -1;
+                    }                          
+                }
+                scene.add(tablero);
+            }
+            addTablero();
 
             camera.position.set(0,5,20);
 
             var ambientLight = new THREE.AmbientLight(0xdddddd,0.05);
             scene.add(ambientLight);
 
-            var light1 = new THREE.PointLight( 0xffffff, 1, 0 );
-            light1.position.set(0,200,0);
-            scene.add(light1);
+            var distance = 4;
 
-            var light2 = new THREE.PointLight( 0xffffff, 1, 0 );
-            light2.position.set(100,200,100);
-            scene.add(light2);
+            var red = new THREE.SpotLight( 0xff0000, 0.15, 0, Math.PI/3, 0.5, 2 );
+            red.position.set(distance,20,distance);
+            scene.add(red);
 
-            var light3 = new THREE.PointLight( 0xffffff, 1, 0 );
-            light3.position.set(-100,-200,-100);
-            scene.add(light3);
+            var green = new THREE.SpotLight( 0x00ff00, 0.15, 0, Math.PI/3, 0.5, 2 );
+            green.position.set(-distance,20,distance);
+            scene.add(green);
+
+            var blue = new THREE.SpotLight( 0x0000ff, 0.15, 0, Math.PI/3, 0.5, 2 );
+            blue.position.set(0,20,-distance*Math.sqrt(2));
+            scene.add(blue);
+
+            scene.autoupdate = true;
 
             //contrucción del menú
-            var params = { luz1: true , luz2: true , luz3: true };
+            var params = { ambient_light: false, red_light: true, green_light: true , blue_light: true, tiles: tile_color };
             var nlines = params.length;
             var gui = new dat.GUI({ 
                 height: nlines*32-1 
             });
 
-            gui.add(params, 'luz1');
-            gui.add(params, 'luz2');
-            gui.add(params, 'luz3');
-            gui.open();
+            gui.add(params, 'ambient_light');
+            gui.add(params, 'red_light');
+            gui.add(params, 'green_light');
+            gui.add(params, 'blue_light');
+            gui.add(params, 'tiles').onChange(update);
+            // gui.open();
 
-            var lightsOn = true;
+            var isOn = true;
             var update = function(){
-                if (params.luz1 == lightsOn){
-                    light1.intensity = 5;
+                var colorObj = new THREE.Color( params.tiles );
+                var hex = colorObj.getHexString();
+                var css = colorObj.getStyle();
+
+                console.log(hex);
+                tile_color = "#"+hex;
+
+                addTablero();
+
+                if (params.ambient_light == isOn){
+                    ambientLight.intensity = 0.05;
                 }else{
-                    light1.intensity = 0;
+                    ambientLight.intensity = 0;
+                };
+                
+                if (params.red_light == isOn){
+                    red.intensity = 5;
+                }else{
+                    red.intensity = 0;
                 };
 
-                if (params.luz2 == lightsOn){
-                    light2.intensity = 5;
+                if (params.green_light == isOn){
+                    green.intensity = 5;
                 }else{
-                    light2.intensity = 0;
+                    green.intensity = 0;
                 };
 
-                if (params.luz3 == lightsOn){
-                    light3.intensity = 5;
+                if (params.blue_light == isOn){
+                    blue.intensity = 5;
                 }else{
-                    light3.intensity = 0;
+                    blue.intensity = 0;
                 };
 
             };
