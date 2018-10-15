@@ -115,15 +115,28 @@
             gui.add(params, 'tiles').onChange(update);
             // gui.open();
 
+            var isHex = function(posible_hex){
+                let re = /[0-9A-Fa-f]{6}/g;
+                if(re.test(posible_hex)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+
             var isOn = true;
             var update = function(){
                 let colorObj = new THREE.Color( params.tiles );
                 let hex = colorObj.getHexString();
-                tile_color = "#"+hex;
-
-                let table = scene.getObjectByName(tablero);
-                scene.remove(table);
-                addTablero();
+                if (isHex(hex)){
+                    if (tile_color != "#"+hex){
+                        tile_color = "#"+hex;
+                        let table = scene.getObjectByName(tablero);
+                        scene.remove(table);
+                        addTablero();
+                        //console.log("-- T A B L E R O !! --");
+                    }
+                }   
 
                 if (params.ambient_light == isOn){
                     ambientLight.intensity = 0.05;
@@ -159,7 +172,6 @@
                 update();
                 render();
                 // tablero.rotation.y += 0.005;
-                
             };
             animateLoop();
         </script>
