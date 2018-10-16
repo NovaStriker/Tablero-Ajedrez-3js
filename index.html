@@ -1,179 +1,204 @@
 <!DOCTYPE HTML>
 <html>
-    <head>
-        <meta charset=utf-8>
-        <meta name="Autores" content="John Cuesta, Luis Lama, David Neira">
-        <title>Tablero Ajedrez</title>
-        <style>
-            body { margin: 0; }
-            canvas { width: 100%; height: 100%; }
-            #BODY_Title{
-                position: absolute;
-                width: 100%;
-                top:10px;
-                display: block;
-                padding-left:10px;
-                color: white;
-                background-color: #444444;
-            }
-        </style>
-    </head>
-    <body>
-        <div id="BODY_Title">Autores: John Cuesta, Luis Lama, David Neira</div>
 
-        <script src="3js/three.js"></script>
-        <script src="3js/OrbitControls.js"></script>
-        <script src="3js/dat.gui.min.js"></script>
-        <script>
-            //creando la escena
-            var scene = new THREE.Scene();
-            scene.background = new THREE.Color( 0x001d30 );
-            var camera = new THREE.PerspectiveCamera ( 75, window.innerWidth / window.innerHeight, 0.1 , 50 );
+<head>
+    <meta charset=utf-8>
+    <meta name="Autores" content="John Cuesta, Luis Lama, David Neira">
+    <title>Tablero Ajedrez</title>
+    <style>
+        body {
+            margin: 0;
+        }
 
-            var renderer = new THREE.WebGLRenderer();
-            renderer.setSize( window.innerWidth, window.innerHeight );
-            document.body.appendChild( renderer.domElement );
+        canvas {
+            width: 100%;
+            height: 100%;
+        }
 
-            //Para movernos con el mouse
-            var controls = new THREE.OrbitControls(camera,renderer.domElement);
+        #BODY_Title {
+            position: absolute;
+            width: 100%;
+            top: 10px;
+            display: block;
+            padding-left: 10px;
+            color: white;
+            background-color: #444444;
+        }
+    </style>
+</head>
 
-            var getMaterial = function(colorAssign){
-                let material = new THREE.MeshPhongMaterial( { color: colorAssign, side: THREE.DoubleSide, flatShading: true } );
-                return material;
-            }
+<body>
+    <div id="BODY_Title">Autores: John Cuesta, Luis Lama, David Neira</div>
 
-            //creando figura
-            var tile_width = 2;
-            var tile_color = "#ffffff";
-            var tablero;
-            var addTablero = function(){
-                let geometry = new THREE.BoxGeometry( tile_width, tile_width /10, tile_width );
-                // var material1 = new THREE.MeshPhongMaterial( { color: 0xffffff, side: THREE.DoubleSide, flatShading: true } );
-                // var material2 = new THREE.MeshPhongMaterial( { color: tile_color, side: THREE.DoubleSide, flatShading: true } );
-                let material1 = getMaterial("#000000");
-                let material2 = getMaterial(tile_color);
+    <script src="3js/three.js"></script>
+    <script src="3js/OrbitControls.js"></script>
+    <script src="3js/dat.gui.min.js"></script>
+    <script>
+        //creando la escena
+        var scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x001d30);
+        var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 50);
 
-                let material;
-                tablero = new THREE.Group();
-                colorBlack = 1
+        var renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
 
-                for (var i = 0; i < 8; i++) {
-                    
-                    if (i % 2 == 0){ colorBlack = 1
-                    }else{ colorBlack = -1 };
-                    
-                    for (var j = 0; j < 8; j++) {
-                        if (colorBlack == 1){ material = material1; }
-                        else{ material = material2; };
+        //Para movernos con el mouse
+        var controls = new THREE.OrbitControls(camera, renderer.domElement);
 
-                        var tile = new THREE.Mesh(geometry, material);
-                        
-                        tile.position.x = (-4+j)*tile_width;
-                        tile.position.z = (-4+i)*tile_width;
+        var getMaterial = function (colorAssign) {
+            let material = new THREE.MeshPhongMaterial({ color: colorAssign, side: THREE.DoubleSide, flatShading: true });
+            return material;
+        }
 
-                        tablero.add(tile);
+        var gui = new dat.GUI({
+            height: nlines * 32 - 1
+        });
 
-                        colorBlack *= -1;
-                    }                          
-                }
-                scene.add(tablero);
-            }
-            addTablero();
+        //creando color picker
+        var color_picker = function () {
 
-            camera.position.set(0,5,20);
+            this.color = "#ffae23"; // CSS string.
 
-            var ambientLight = new THREE.AmbientLight(0xdddddd,0.05);
-            scene.add(ambientLight);
+        };
 
-            var distance = 4;
 
-            var red = new THREE.SpotLight( 0xff0000, 0.15, 0, Math.PI/3, 0.5, 2 );
-            red.position.set(distance,20,distance);
-            scene.add(red);
 
-            var green = new THREE.SpotLight( 0x00ff00, 0.15, 0, Math.PI/3, 0.5, 2 );
-            green.position.set(-distance,20,distance);
-            scene.add(green);
 
-            var blue = new THREE.SpotLight( 0x0000ff, 0.15, 0, Math.PI/3, 0.5, 2 );
-            blue.position.set(0,20,-distance*Math.sqrt(2));
-            scene.add(blue);
+        //creando figura
+        var tile_width = 2;
+        var tablero;
+        var addTablero = function () {
+            let geometry = new THREE.BoxGeometry(tile_width, tile_width / 10, tile_width);
+            // var material1 = new THREE.MeshPhongMaterial( { color: 0xffffff, side: THREE.DoubleSide, flatShading: true } );
+            // var material2 = new THREE.MeshPhongMaterial( { color: tile_color, side: THREE.DoubleSide, flatShading: true } );
+            let material1 = getMaterial("#000000");
+            let material2 = getMaterial("#ffffff");
 
-            scene.autoupdate = true;
+            let material;
+            tablero = new THREE.Group();
+            colorBlack = 1
 
-            //contrucción del menú
-            var params = { ambient_light: false, red_light: true, green_light: true , blue_light: true, tiles: tile_color };
-            var nlines = params.length;
-            var gui = new dat.GUI({ 
-                height: nlines*32-1 
-            });
+            for (var i = 0; i < 8; i++) {
 
-            gui.add(params, 'ambient_light');
-            gui.add(params, 'red_light');
-            gui.add(params, 'green_light');
-            gui.add(params, 'blue_light');
-            gui.add(params, 'tiles').onChange(update);
-            // gui.open();
+                if (i % 2 == 0) {
+                    colorBlack = 1
+                } else { colorBlack = -1 };
 
-            var isHex = function(posible_hex){
-                let re = /[0-9A-Fa-f]{6}/g;
-                if(re.test(posible_hex)) {
-                    return true;
-                } else {
-                    return false;
+                for (var j = 0; j < 8; j++) {
+                    if (colorBlack == 1) { material = material1; }
+                    else { material = material2; };
+
+                    var tile = new THREE.Mesh(geometry, material);
+
+                    tile.position.x = (-4 + j) * tile_width;
+                    tile.position.z = (-4 + i) * tile_width;
+
+                    tablero.add(tile);
+
+                    colorBlack *= -1;
                 }
             }
+            scene.add(tablero);
+        }
+        addTablero();
 
-            var isOn = true;
-            var update = function(){
-                let colorObj = new THREE.Color( params.tiles );
-                let hex = colorObj.getHexString();
-                if (isHex(hex)){
-                    if (tile_color != "#"+hex){
-                        tile_color = "#"+hex;
-                        let table = scene.getObjectByName(tablero);
-                        scene.remove(table);
-                        addTablero();
-                        //console.log("-- T A B L E R O !! --");
-                    }
-                }   
+        camera.position.set(0, 5, 20);
 
-                if (params.ambient_light == isOn){
-                    ambientLight.intensity = 0.05;
-                }else{
-                    ambientLight.intensity = 0;
-                };
-                
-                if (params.red_light == isOn){
-                    red.intensity = 5;
-                }else{
-                    red.intensity = 0;
-                };
+        var ambientLight = new THREE.AmbientLight(0xdddddd, 0.05);
+        scene.add(ambientLight);
 
-                if (params.green_light == isOn){
-                    green.intensity = 5;
-                }else{
-                    green.intensity = 0;
-                };
+        var distance = 4;
 
-                if (params.blue_light == isOn){
-                    blue.intensity = 5;
-                }else{
-                    blue.intensity = 0;
-                };
+        var red = new THREE.SpotLight(0xff0000, 0.15, 0, Math.PI / 3, 0.5, 2);
+        red.position.set(distance, 20, distance);
+        scene.add(red);
 
+        var green = new THREE.SpotLight(0x00ff00, 0.15, 0, Math.PI / 3, 0.5, 2);
+        green.position.set(-distance, 20, distance);
+        scene.add(green);
+
+        var blue = new THREE.SpotLight(0x0000ff, 0.15, 0, Math.PI / 3, 0.5, 2);
+        blue.position.set(0, 20, -distance * Math.sqrt(2));
+        scene.add(blue);
+
+        scene.autoupdate = true;
+
+        //contrucción del menú
+        var tile_color="#ffae23";
+        var params = { ambient_light: false, red_light: true, green_light: true, blue_light: true, tiles:tile_color};
+        var nlines = params.length;
+        
+       
+        gui.add(params, 'ambient_light');
+        gui.add(params, 'red_light');
+        gui.add(params, 'green_light');
+        gui.add(params, 'blue_light');
+        gui.addColor(params,'tiles').onChange(update);
+        // gui.open();
+
+        var isHex = function (posible_hex) {
+            let re = /[0-9A-Fa-f]{6}/g;
+            if (re.test(posible_hex)) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        var isOn = true;
+        var update = function () {
+            let colorObj = new THREE.Color(params.tiles);
+            let hex = colorObj.getHexString();
+            
+            if (isHex(hex)) {
+                if (tile_color != "#" + hex) {
+                    tile_color = "#" + hex;
+                    scene.background = new THREE.Color(tile_color);
+                    let table = scene.getObjectByName(tablero);
+                    scene.remove(table);
+                    addTablero();
+                    //console.log("-- T A B L E R O !! --");
+                }
+            }
+
+            if (params.ambient_light == isOn) {
+                ambientLight.intensity = 0.05;
+            } else {
+                ambientLight.intensity = 0;
             };
 
-            var render = function(){
-                  renderer.render( scene, camera );
+            if (params.red_light == isOn) {
+                red.intensity = 5;
+            } else {
+                red.intensity = 0;
             };
-            function animateLoop() {
-                requestAnimationFrame( animateLoop );
-                update();
-                render();
-                // tablero.rotation.y += 0.005;
+
+            if (params.green_light == isOn) {
+                green.intensity = 5;
+            } else {
+                green.intensity = 0;
             };
-            animateLoop();
-        </script>
-    </body>
+
+            if (params.blue_light == isOn) {
+                blue.intensity = 5;
+            } else {
+                blue.intensity = 0;
+            };
+
+        };
+
+        var render = function () {
+            renderer.render(scene, camera);
+        };
+        function animateLoop() {
+            requestAnimationFrame(animateLoop);
+            update();
+            render();
+            // tablero.rotation.y += 0.005;
+        };
+        animateLoop();
+    </script>
+</body>
+
 </html>
