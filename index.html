@@ -87,6 +87,10 @@
 
             var distance = 4;
 
+            var white = new THREE.SpotLight( 0xffffff, 0.15, 0, Math.PI/3, 0.5, 2 );
+            white.position.set(0,50,0);
+            scene.add(white);
+
             var red = new THREE.SpotLight( 0xff0000, 0.15, 0, Math.PI/3, 0.5, 2 );
             red.position.set(distance,20,distance);
             scene.add(red);
@@ -102,13 +106,14 @@
             scene.autoupdate = true;
 
             //contrucción del menú
-            var params = { ambient_light: false, red_light: true, green_light: true , blue_light: true, tiles: tile_color };
+            var params = { ambient_light: false, white_light: true, red_light: false, green_light: false , blue_light: false, tiles: tile_color };
             var nlines = params.length;
             var gui = new dat.GUI({ 
                 height: nlines*32-1 
             });
 
             gui.add(params, 'ambient_light');
+            gui.add(params, 'white_light')
             gui.add(params, 'red_light');
             gui.add(params, 'green_light');
             gui.add(params, 'blue_light');
@@ -144,6 +149,12 @@
                     ambientLight.intensity = 0;
                 };
                 
+                if (params.white_light == isOn){
+                    white.intensity = 5;
+                }else{
+                    white.intensity = 0;
+                };
+
                 if (params.red_light == isOn){
                     red.intensity = 5;
                 }else{
