@@ -84,8 +84,56 @@
         		blue_light.position.set( 0 - tile_width, 20, -distanceFromCenter - tile_width);
         		scene.add(blue_light); }
 
+        	var prisma, esfera, piramide, toroide;
+        	var figurasCreadas = false;
+        	var addFiguras = function(){
+        		//piramide, la diferencia entre cylinder y cylinder 
+        		//buffer, es que el cylinder buffer permite que la cara 
+        		//superior tenga 0 de radio.
+        		let geometry = new THREE.CylinderBufferGeometry(0,2,3,4);
+        		let material = getMaterial("#00ffff");
+        		piramide = new THREE.Mesh(geometry,material);
+        		piramide.position.set(-3.5,7,-3);
+        		scene.add(piramide);
+        		//prisma de n lados es un cilindro si n es lo suficientemente grande 
+        		geometry = new THREE.CylinderGeometry(1,1,3,8);
+        		material = getMaterial("#ff00ff");
+        		prisma = new THREE.Mesh(geometry,material);
+        		prisma.position.set(2.5,5.5,-3);
+        		scene.add(prisma);
+        		// Torus - Toroide
+        		geometry = new THREE.TorusGeometry(1.5,0.5,32,100);
+        		material = getMaterial("#ffff00");   //fixed color
+        		toroide = new THREE.Mesh(geometry,material);
+        		toroide.position.set(2,3,3);
+        		toroide.rotation.x = Math.PI / 2;
+        		scene.add(toroide);
+        		//esfera
+        		geometry = new THREE.SphereGeometry(1.5,32,32);
+        		material = getMaterial("#777777");
+        		esfera = new THREE.Mesh(geometry,material);
+        		esfera.position.set(-4,2,3);
+        		scene.add(esfera); 
+        		figurasCreadas = true; }
+        	var removeFiguras = function(){
+        		scene.remove(prisma);
+        		scene.remove(esfera);
+        		scene.remove(piramide);
+        		scene.remove(toroide); 
+        		figurasCreadas = false; }
+
+        	var rotateFigura = function(figura,vel_X,vel_Y,vel_Z){
+        		if(vel_X != 0){ figura.rotation.x += vel_X; }
+        		if(vel_Y != 0){ figura.rotation.y += vel_Y; }
+        		if(vel_Z != 0){ figura.rotation.z += vel_Z; } }
+        	var rotationOn = function(){
+        		rotateFigura(piramide,0,0.025,0); 
+        		rotateFigura(prisma,0,-0.025,0);
+        		rotateFigura(toroide,0,0.025,0);
+        		rotateFigura(esfera,0,0,0.025); }
+
 			// GUI
-			var params = { up_light: true, down_light: true, background: backgroundScene, red_light: false, green_light: false , blue_light: false, non_black_tiles: tile_color, };
+			var params = { up_light: true, down_light: false, background: backgroundScene, red_light: false, green_light: false , blue_light: false, non_black_tiles: tile_color, geometries: true, rotation: false,};
         	var nlines = params.length;
 			var gui = new dat.GUI({ height: nlines * 32 - 1, });
 			gui.add(params, 'up_light');
@@ -95,12 +143,15 @@
         	gui.add(params, 'green_light');
         	gui.add(params, 'blue_light');
         	gui.addColor(params, 'non_black_tiles').onChange(update);
+        	gui.add(params, 'geometries');
+        	gui.add(params, 'rotation');
 
 			// load objects
 			addTablero();
+			addFiguras();
 			distanceFromCenter = 1.75*tile_width;
 			addLights( distanceFromCenter );
-			camera.position.set(0, 4, 16);
+			camera.position.set(-1, 4, 16);
 
 			// update and render loop
 			var isHex = function (posible_hex) {
@@ -109,15 +160,15 @@
     	        else { return false; } }
 			var update = function(){ 
 				// change in GUI for lights
-            	if (params.up_light) { white_up_light.intensity = 1; }        // white down
+            	if (params.up_light) { white_up_light.intensity = 1; }
 	            else { white_up_light.intensity = 0; };
-	            if (params.down_light) { white_down_light.intensity = 1; }    // white up
+	            if (params.down_light) { white_down_light.intensity = 1; }
 	            else { white_down_light.intensity = 0; };	            
-	            if (params.red_light) { red_light.intensity = 6; }            		// red
+	            if (params.red_light) { red_light.intensity = 6; }
 	            else { red_light.intensity = 0; };
-	            if (params.green_light) { green_light.intensity = 6; }        		// green
+	            if (params.green_light) { green_light.intensity = 6; }
 	            else { green_light.intensity = 0; };
-	            if (params.blue_light) { blue_light.intensity = 6; }          		// blue
+	            if (params.blue_light) { blue_light.intensity = 6; }
 	            else { blue_light.intensity = 0; };
 
 	            // change in GUI for color_tiles or background
@@ -129,7 +180,11 @@
 	                    tile_color = "#" + color_hex;
 	                    let table = scene.getObjectByName(tablero);
 	                    scene.remove(table);
-	                    addTablero(); } }
+	                    addTablero(); }
+	            if( !figurasCreadas && params.geometries == true ){ addFiguras(); } 
+	            if( figurasCreadas && params.geometries == false ){ removeFiguras(); }
+	            if( figurasCreadas && params.rotation ){ rotationOn(); } }
+	            
 			var render = function(){ renderer.render(scene,camera); }
 			var showAnimationLoop = function(){
 				requestAnimationFrame(showAnimationLoop);
