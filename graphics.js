@@ -7,6 +7,8 @@ var camera = new THREE.PerspectiveCamera(75,window.innerWidth/window.innerHeight
 var renderer = new THREE.WebGLRenderer();
 var selected_object = null;
 
+var picking_method = 'transform';
+
 renderer.setSize(window.innerWidth,window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
@@ -146,10 +148,12 @@ var shapectl = gui.addFolder("Shape control");
 
 var shape_params = {
     color: "#00ffff",
+    picking: "translate"    
 };
 
 // adding folder to gui control
 shapectl.addColor(shape_params, 'color').onChange(ChangeColor).listen();
+shapectl.add(shape_params, 'picking', [ "translate", "rotate"] );
 
 // instantiate raycaster 
 var raycaster = new THREE.Raycaster();
@@ -176,7 +180,8 @@ function ChangeColor(){
 
 // callback event for mouse down
 function onDocumentMouseDown( event ) {    
-            event.preventDefault();
+            // event.preventDefault();
+            event.stopPropagation();
             raycaster.setFromCamera( mouse, camera );
             
             // calculate objects intersecting the picking ray
@@ -191,13 +196,8 @@ function onDocumentMouseDown( event ) {
                 // change gui color
                 shape_params.color = selected_object.material.color.getHex();
                 
-                control.setMode('translate');
-                control.attach( selected_object );
-
-                
-                
-                
-            
+                control.setMode(shape_params.picking);
+                control.attach( selected_object );           
             }
              
 }
