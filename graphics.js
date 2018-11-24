@@ -46,6 +46,7 @@ var addTablero = function(){
 var ambient_light, white_light;               // white
 var red_light, green_light, blue_light;       // RGB
 var cyan_light, magenta_light, yellow_light;  // CMY
+var speed=0.025;
 
 var getSpotLight = function(colorDesired,intensity){
     spotLight = new THREE.SpotLight( colorDesired, intensity );
@@ -117,16 +118,16 @@ var rotateFigura = function(figura,vel_X,vel_Y,vel_Z){
     if(vel_X != 0){ figura.rotation.x += vel_X; }
     if(vel_Y != 0){ figura.rotation.y += vel_Y; }
     if(vel_Z != 0){ figura.rotation.z += vel_Z; } }
-var rotationOn = function(){
-    rotateFigura(piramide,0,0.025,0); 
-    rotateFigura(prisma,0,-0.025,0);
-    rotateFigura(toroide,0,0.025,0);
-    rotateFigura(esfera,0,0,0.025); }
+    var rotationOn = function(){
+        rotateFigura(piramide,0,params.speed,0); 
+        rotateFigura(prisma,0,params.speed,0);
+        rotateFigura(toroide,0,params.speed,0);
+        rotateFigura(esfera,0,0,params.speed); }
 
 // GUI
 var params = { up_light: true, down_light: false, background: backgroundScene, 
     red_light: false, green_light: false , blue_light: false, 
-    non_black_tiles: tile_color, geometries: true, rotation: false,};
+    non_black_tiles: tile_color, geometries: true, rotation: false,speed : this.speed};
 
 var nlines = params.length;
 var gui = new dat.GUI({ height: nlines * 32 - 1, });
@@ -141,6 +142,7 @@ scenectl.add(params, 'blue_light');
 scenectl.addColor(params, 'non_black_tiles').onChange(update);
 scenectl.add(params, 'geometries');
 scenectl.add(params, 'rotation');
+scenectl.add(params, 'speed',-1,1);
 
 // --- CHANGE COLOR GUI CONTROL ---------------------------------
 
