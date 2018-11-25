@@ -51,6 +51,8 @@ var ambient_light, white_light;               // white
 var red_light, green_light, blue_light;       // RGB
 var cyan_light, magenta_light, yellow_light;  // CMY
 var speed=0.025;
+var speed_around=0.025;
+var geometries=true;
 
 var getSpotLight = function(colorDesired,intensity){
     spotLight = new THREE.SpotLight( colorDesired, intensity );
@@ -159,8 +161,8 @@ loader.load(
 // GUI
 var params = { up_light: true, down_light: false, background: backgroundScene, 
     red_light: false, green_light: false , blue_light: false, 
-    non_black_tiles: tile_color, geometries: true, rotation: false,speed : this.speed,
-    rotate_around: false};
+    non_black_tiles: tile_color,rotation: false,speed : this.speed,
+    rotate_around: false, speed_around: this.speed_around};
 
 var nlines = params.length;
 var gui = new dat.GUI({ height: nlines * 32 - 1, });
@@ -173,10 +175,10 @@ scenectl.add(params, 'red_light');
 scenectl.add(params, 'green_light');
 scenectl.add(params, 'blue_light');
 scenectl.addColor(params, 'non_black_tiles').onChange(update);
-scenectl.add(params, 'geometries');
+//scenectl.add(params, 'geometries');
 scenectl.add(params, 'rotation');
 scenectl.add(params, 'speed',-1,1);
-scenectl.add(params, 'speed',-1,1);
+scenectl.add(params, 'speed_around',-1,1);
 scenectl.add(params, 'rotate_around').onChange(rotateAround);
 
 
@@ -193,7 +195,7 @@ function rotateAround(){
         pivotPoint.remove(piramide);
         pivotPoint.remove(toroide);
         pivotPoint.remove(prisma);
-        addFiguras();
+        //addFiguras();
 
     }
 }
@@ -316,17 +318,19 @@ var update = function(){
             scene.remove(table);
             addTablero(); }
     
-            if( !figurasCreadas && params.geometries == true ){ addFiguras(); } 
+    if( !figurasCreadas && geometries == true ){ addFiguras(); } 
     
-    if( figurasCreadas && params.geometries == false ){ removeFiguras(); }
+    if( figurasCreadas && geometries == false ){ removeFiguras(); }
     
-    if( figurasCreadas && params.rotation ){ rotationOn(); } }
+    if( figurasCreadas && params.rotation ){ rotationOn(); } 
+    if( figurasCreadas && params.rotate_around== true){ rotateAround(); } 
+}
     
 function render(){ 
     renderer.render(scene,camera);
 
     if(params.rotate_around)
-        pivotPoint.rotation.y += 0.02;
+        pivotPoint.rotation.y += params.speed_around;
 
 }
 function onWindowResize() {
