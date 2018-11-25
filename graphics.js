@@ -23,6 +23,10 @@ var getMaterial = function(colorDesired){
 var tablero = new THREE.Group();
 var tile_width=2;
 var tile_color="#ffffff";
+
+
+
+
 var addTablero = function(){
     var tile_geometry = new THREE.BoxGeometry(tile_width,tile_width/10,tile_width);
     var black_material = getMaterial("#000000");   //fixed color
@@ -73,7 +77,8 @@ var addLights = function( distanceFromCenter ){
     blue_light.position.set( 0 - tile_width, 20, -distanceFromCenter - tile_width);
     scene.add(blue_light); }
 
-var prisma, esfera, piramide, toroide;
+var prisma, esfera, piramide, toroide, iron_man;
+var pivotPoint = new THREE.Object3D();
 var figurasCreadas = false;
 
 var addFiguras = function(){
@@ -105,6 +110,8 @@ var addFiguras = function(){
     esfera = new THREE.Mesh(geometry,material);
     esfera.position.set(-4,2,3);
     scene.add(esfera); 
+    
+
     figurasCreadas = true; }
 
 var removeFiguras = function(){
@@ -118,16 +125,42 @@ var rotateFigura = function(figura,vel_X,vel_Y,vel_Z){
     if(vel_X != 0){ figura.rotation.x += vel_X; }
     if(vel_Y != 0){ figura.rotation.y += vel_Y; }
     if(vel_Z != 0){ figura.rotation.z += vel_Z; } }
-    var rotationOn = function(){
-        rotateFigura(piramide,0,params.speed,0); 
-        rotateFigura(prisma,0,params.speed,0);
-        rotateFigura(toroide,0,params.speed,0);
-        rotateFigura(esfera,0,0,params.speed); }
+var rotationOn = function(){
+    rotateFigura(piramide,0,params.speed,0); 
+    rotateFigura(prisma,0,params.speed,0);
+    rotateFigura(toroide,0,params.speed,0);
+    rotateFigura(esfera,0,0,params.speed); }
+
+
+
+var loader = new THREE.OBJLoader();
+
+loader.load(
+    // resource URL
+    'IronMan.obj',
+    // called when resource is loaded
+    function ( object ) {
+        iron_man = object;
+        object.scale.set(0.025,0.025,0.025);
+        scene.add( object );
+        object.add(pivotPoint);
+       
+        scene.add(pivotPoint);
+                
+    },
+    // called when loading is in progresses
+    function ( xhr ) {console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );},
+    // called when loading has errors
+    function ( error ) {console.log( 'An error happened' );}
+);
+
+
 
 // GUI
 var params = { up_light: true, down_light: false, background: backgroundScene, 
     red_light: false, green_light: false , blue_light: false, 
-    non_black_tiles: tile_color, geometries: true, rotation: false,speed : this.speed};
+    non_black_tiles: tile_color, geometries: true, rotation: false,speed : this.speed,
+    rotate_around: false};
 
 var nlines = params.length;
 var gui = new dat.GUI({ height: nlines * 32 - 1, });
@@ -143,6 +176,27 @@ scenectl.addColor(params, 'non_black_tiles').onChange(update);
 scenectl.add(params, 'geometries');
 scenectl.add(params, 'rotation');
 scenectl.add(params, 'speed',-1,1);
+scenectl.add(params, 'speed',-1,1);
+scenectl.add(params, 'rotate_around').onChange(rotateAround);
+
+
+// --- ROTATE AROUND -------------------------------------------
+
+function rotateAround(){
+    if (params.rotate_around){
+        pivotPoint.add(esfera);
+        pivotPoint.add(piramide);
+        pivotPoint.add(toroide);
+        pivotPoint.add(prisma);
+    }else{
+        pivotPoint.remove(esfera);
+        pivotPoint.remove(piramide);
+        pivotPoint.remove(toroide);
+        pivotPoint.remove(prisma);
+        addFiguras();
+
+    }
+}
 
 // --- CHANGE COLOR GUI CONTROL ---------------------------------
 
@@ -155,7 +209,7 @@ var shape_params = {
 
 // adding folder to gui control
 shapectl.addColor(shape_params, 'color').onChange(ChangeColor).listen();
-shapectl.add(shape_params, 'picking', [ "translate", "rotate"] );
+shapectl.add(shape_params, 'picking', [ "translate", "rotate", "scale"] );
 
 // instantiate raycaster 
 var raycaster = new THREE.Raycaster();
@@ -268,7 +322,13 @@ var update = function(){
     
     if( figurasCreadas && params.rotation ){ rotationOn(); } }
     
-function render(){ renderer.render(scene,camera); }
+function render(){ 
+    renderer.render(scene,camera);
+
+    if(params.rotate_around)
+        pivotPoint.rotation.y += 0.02;
+
+}
 function onWindowResize() {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
