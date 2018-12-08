@@ -6,7 +6,7 @@ scene.background = new THREE.Color(backgroundScene);
 var camera = new THREE.PerspectiveCamera(75,window.innerWidth/window.innerHeight,0.1,500);
 var renderer = new THREE.WebGLRenderer();
 var selected_object = null;
-
+var aux;
 var picking_method = 'transform';
 
 renderer.setSize(window.innerWidth,window.innerHeight);
@@ -23,9 +23,6 @@ var getMaterial = function(colorDesired){
 var tablero = new THREE.Group();
 var tile_width=2;
 var tile_color="#ffffff";
-
-
-
 
 var addTablero = function(){
     var tile_geometry = new THREE.BoxGeometry(tile_width,tile_width/10,tile_width);
@@ -143,12 +140,10 @@ loader.load(
     // called when resource is loaded
     function ( object ) {
         iron_man = object;
-        object.scale.set(0.025,0.025,0.025);
-        scene.add( object );
-        object.add(pivotPoint);
-       
+        iron_man.scale.set(0.025,0.025,0.025);
+        scene.add(iron_man);
+        iron_man.add(pivotPoint);
         scene.add(pivotPoint);
-                
     },
     // called when loading is in progresses
     function ( xhr ) {console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );},
@@ -190,13 +185,6 @@ function rotateAround(){
         pivotPoint.add(piramide);
         pivotPoint.add(toroide);
         pivotPoint.add(prisma);
-    }else{
-        pivotPoint.remove(esfera);
-        pivotPoint.remove(piramide);
-        pivotPoint.remove(toroide);
-        pivotPoint.remove(prisma);
-        //addFiguras();
-
     }
 }
 
@@ -232,10 +220,6 @@ function ChangeColor(){
     selected_object.material.color.setHex(shape_params.color);
 };
 
-// var dragcontrols = new THREE.DragControls( scene.children, camera, renderer.domElement );
-// dragcontrols.addEventListener( 'dragstart', function ( event ) { controls.enabled = false; } ); //cuando hace click sobre una figura y mientras la tiene sostenida
-// dragcontrols.addEventListener( 'dragend', function ( event ) { controls.enabled = true; } );  //cuando suelta una figura
-
 // callback event for mouse down
 function onDocumentMouseDown( event ) {    
             // event.preventDefault();
@@ -243,7 +227,7 @@ function onDocumentMouseDown( event ) {
             raycaster.setFromCamera( mouse, camera );
             
             // calculate objects intersecting the picking ray
-            var intersects = raycaster.intersectObjects( scene.children );
+            var intersects = raycaster.intersectObjects( scene.children);
             // intersects[0].object.material.color.set( 0xff0000 );
             
             //validate if has objects intersected
@@ -329,8 +313,12 @@ var update = function(){
 function render(){ 
     renderer.render(scene,camera);
 
-    if(params.rotate_around)
+    if(params.rotate_around){
         pivotPoint.rotation.y += params.speed_around;
+    }
+    else{
+        pivotPoint.rotation=false;
+    }
 
 }
 function onWindowResize() {
